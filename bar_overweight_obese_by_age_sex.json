@@ -1,0 +1,55 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Overweight or Obese by Age Group and Sex (2022)",
+  "width": 400,
+  "height": 260,
+  "data": {
+    "values": [
+      { "age": "18–24", "sex": "Men",   "pct": 42 },
+      { "age": "18–24", "sex": "Women", "pct": 41 },
+      { "age": "25–34", "sex": "Men",   "pct": 58 },
+      { "age": "25–34", "sex": "Women", "pct": 47 },
+      { "age": "35–44", "sex": "Men",   "pct": 70 },
+      { "age": "35–44", "sex": "Women", "pct": 55 },
+      { "age": "45–54", "sex": "Men",   "pct": 77 },
+      { "age": "45–54", "sex": "Women", "pct": 63 },
+      { "age": "55–64", "sex": "Men",   "pct": 80 },
+      { "age": "55–64", "sex": "Women", "pct": 71 },
+      { "age": "65–74", "sex": "Men",   "pct": 81 },
+      { "age": "65–74", "sex": "Women", "pct": 71 },
+      { "age": "75+",   "sex": "Men",   "pct": 74 },
+      { "age": "75+",   "sex": "Women", "pct": 68 }
+    ]
+  },
+  "mark": {
+    "type": "bar",
+    "cornerRadiusTopLeft": 3,
+    "cornerRadiusTopRight": 3
+  },
+  "encoding": {
+    "x": {
+      "field": "age",
+      "type": "ordinal",
+      "title": "Age Group",
+      "axis": { "labelAngle": -30 }
+    },
+    "y": {
+      "field": "pct",
+      "type": "quantitative",
+      "title": "% Overweight or Obese",
+      "scale": { "domain": [0, 90] }
+    },
+    "color": {
+      "field": "sex",
+      "type": "nominal",
+      "scale": { "domain": ["Men", "Women"], "range": ["#1a6fad", "#e07b39"] },
+      "legend": { "title": "Sex" }
+    },
+    "xOffset": { "field": "sex", "type": "nominal" },
+    "tooltip": [
+      { "field": "age", "title": "Age Group" },
+      { "field": "sex", "title": "Sex" },
+      { "field": "pct", "title": "% Overweight/Obese" }
+    ]
+  }
+}

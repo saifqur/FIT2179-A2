@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Australia's Physical Activity & Obesity Trends</title>
+
+  <!-- Pure.css -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css">
+
+  <!-- Vega-Lite -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      background: #f4f5f7;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+    }
+
+    .site-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .site-header p {
+      font-size: 1rem;
+      color: #b8d0e8;
+      margin: 0 auto;
+      max-width: 640px;
+    }
+
+    .header-stats {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 1.75rem;
+    }
+
+    .header-stat {
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+    }
+
+    .header-stat strong {
+      font-size: 1.4rem;
+      display: block;
+      color: #f0c040;
+    }
+
+    /* ── NAV ── */
+    .section-nav {
+      background: #fff;
+      border-bottom: 1px solid #dde;
+      padding: 0.5rem 1.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .section-nav a {
+      color: #1a3a5c;
+      text-decoration: none;
+      margin: 0 0.75rem;
+      font-weight: 600;
+    }
+
+    .section-nav a:hover { text-decoration: underline; }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .section {
+      padding: 3rem 0 2rem;
+    }
+
+    .section-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #1a3a5c;
+      margin: 0 0 0.3rem;
+      border-left: 4px solid #e07b39;
+      padding-left: 0.75rem;
+    }
+
+    .section-intro {
+      font-size: 0.97rem;
+      color: #555;
+      max-width: 750px;
+      margin: 0.4rem 0 1.75rem;
+      line-height: 1.7;
+    }
+
+    hr.section-divider {
+      border: none;
+      border-top: 1px solid #dde;
+      margin: 0;
+    }
+
+    /* ── CARDS ── */
+    .chart-card {
+      background: #fff;
+      border: 1px solid #dde;
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      overflow: visible;
+    }
+
+    .chart-card h3 {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: #222;
+      margin: 0 0 0.2rem;
+    }
+
+    .chart-card .chart-note {
+      font-size: 0.78rem;
+      color: #888;
+      margin: 0 0 1rem;
+    }
+
+    /* ── STAT BLOCKS ── */
+    .stat-grid {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-box {
+      flex: 1;
+      min-width: 160px;
+      background: #fff;
+      border: 1px solid #dde;
+      border-top: 3px solid #e07b39;
+      border-radius: 6px;
+      padding: 1rem;
+    }
+
+    .stat-box .num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #e07b39;
+      line-height: 1;
+    }
+
+    .stat-box .lbl {
+      font-size: 0.82rem;
+      color: #666;
+      margin-top: 0.3rem;
+    }
+
+    .stat-box.blue { border-top-color: #1a6fad; }
+    .stat-box.blue .num { color: #1a6fad; }
+    .stat-box.green { border-top-color: #2e9e5b; }
+    .stat-box.green .num { color: #2e9e5b; }
+    .stat-box.purple { border-top-color: #7b5ea7; }
+    .stat-box.purple .num { color: #7b5ea7; }
+
+    /* ── WAFFLE ── */
+    .waffle-wrap {
+      background: #fff;
+      border: 1px solid #dde;
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .waffle-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 20px);
+      gap: 3px;
+    }
+
+    .waffle-cell {
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+    }
+
+    .w-obese      { background: #c0392b; }
+    .w-overweight { background: #e07b39; }
+    .w-normal     { background: #d5d8dc; }
+
+    .waffle-legend { min-width: 200px; }
+    .waffle-legend h4 { margin: 0 0 0.75rem; font-size: 1rem; color: #1a3a5c; }
+    .leg-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.88rem; }
+    .leg-dot { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+    .waffle-source { font-size: 0.75rem; color: #aaa; margin-top: 0.75rem; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      background: #1a3a5c;
+      color: #b8d0e8;
+      padding: 2rem 1.5rem;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      margin-top: 2rem;
+    }
+
+    .site-footer h4 { color: #fff; margin: 0 0 0.5rem; font-size: 0.9rem; }
+    .site-footer a  { color: #7fc4e8; }
+    .site-footer p  { margin: 0 0 0.25rem; }
+
+    /* vega embed cleanup */
+    .vega-embed { width: 100% !important; }
+    .vega-embed canvas { background: transparent !important; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="site-header">
+  <h1>Australia's Physical Activity &amp; Obesity Trends</h1>
+  <p>Two in three Australian adults are overweight or obese. Explore how inactivity, age, gender, and geography are shaping the nation's health.</p>
+  <div class="header-stats">
+    <div class="header-stat"><strong>66%</strong>adults overweight/obese</div>
+    <div class="header-stat"><strong>41%</strong>not meeting activity guidelines</div>
+    <div class="header-stat"><strong>10th</strong>highest obesity rate in OECD</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="section-nav">
+  <a href="#overview">Overview</a>
+  <a href="#geography">Geography</a>
+  <a href="#activity">Activity</a>
+  <a href="#obesity">Obesity</a>
+  <a href="#breakdown">Breakdown</a>
+</div>
+
+<!-- ═══════════════════════════
+     SECTION 1 — OVERVIEW
+════════════════════════════ -->
+<div id="overview">
+<hr class="section-divider">
+<div class="container">
+<div class="section">
+
+  <h2 class="section-title">Who Is Carrying the Weight?</h2>
+  <p class="section-intro">
+    Based on the ABS 2022 National Health Survey, nearly two-thirds of Australian adults live with overweight or obesity. Men are more affected than women, and rates climb sharply with age.
+  </p>
+
+  <!-- Waffle chart -->
+  <div class="waffle-wrap">
+    <div>
+      <div class="waffle-grid" id="waffle"></div>
+    </div>
+    <div class="waffle-legend">
+      <h4>Out of every 100 Australian adults…</h4>
+      <div class="leg-row"><div class="leg-dot" style="background:#c0392b"></div><span><strong>32</strong> live with obesity (BMI ≥ 30)</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#e07b39"></div><span><strong>34</strong> are overweight (BMI 25–30)</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#d5d8dc"></div><span><strong>34</strong> are in a healthy weight range</span></div>
+      <p class="waffle-source">Source: ABS National Health Survey 2022</p>
+    </div>
+  </div>
+
+  <!-- Stat blocks -->
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="num">71%</div>
+      <div class="lbl">of men are overweight or obese (2022)</div>
+    </div>
+    <div class="stat-box blue">
+      <div class="num">61%</div>
+      <div class="lbl">of women are overweight or obese (2022)</div>
+    </div>
+    <div class="stat-box purple">
+      <div class="num">13%</div>
+      <div class="lbl">of adults have severe obesity (BMI ≥ 35)</div>
+    </div>
+    <div class="stat-box green">
+      <div class="num">26%</div>
+      <div class="lbl">of children aged 2–17 are overweight or obese</div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════
+     SECTION 2 — GEOGRAPHY
+════════════════════════════ -->
+<div id="geography">
+<hr class="section-divider">
+<div class="container">
+<div class="section">
+
+  <h2 class="section-title">Where You Live Matters</h2>
+  <p class="section-intro">
+    Obesity and inactivity rates vary significantly across Australian states and territories. Tasmania and Queensland consistently show the highest rates, while the ACT and Victoria tend to perform better. The scatter plot below shows that states with higher inactivity also tend to have higher obesity rates.
+  </p>
+
+  <div class="pure-g">
+    <div class="pure-u-1 pure-u-md-1-2" style="padding-right:0.5rem">
+      <div class="chart-card">
+        <h3>Overweight or Obese Adults by State (2022)</h3>
+        <p class="chart-note">% of adults aged 18+ with BMI ≥ 25 · Source: ABS NHS State & Territory Findings 2022</p>
+        <div id="map-obesity"></div>
+      </div>
+    </div>
+    <div class="pure-u-1 pure-u-md-1-2" style="padding-left:0.5rem">
+      <div class="chart-card">
+        <h3>Adults Not Meeting Physical Activity Guidelines by State</h3>
+        <p class="chart-note">% of adults aged 15+ · Source: ABS NHS State & Territory Findings 2022</p>
+        <div id="map-activity"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>State-by-State: Physical Inactivity vs Obesity Rate</h3>
+    <p class="chart-note">States further right and higher are most at risk · Source: ABS NHS 2022</p>
+    <div id="scatter-states"></div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════
+     SECTION 3 — ACTIVITY
+════════════════════════════ -->
+<div id="activity">
+<hr class="section-divider">
+<div class="container">
+<div class="section">
+
+  <h2 class="section-title">How Active Are Australians?</h2>
+  <p class="section-intro">
+    Australian guidelines recommend at least 150 minutes of moderate activity per week for adults. In 2022, 41% of adults still fell short — a large improvement from 65% in 2017–18, but older Australians and women remain significantly less active.
+  </p>
+
+  <div class="pure-g">
+    <div class="pure-u-1 pure-u-md-1-2" style="padding-right:0.5rem">
+      <div class="chart-card">
+        <h3>% Not Meeting Guidelines by Age Group (2022)</h3>
+        <p class="chart-note">Adults and adolescents · Source: ABS NHS 2022</p>
+        <div id="bar-activity-age"></div>
+      </div>
+    </div>
+    <div class="pure-u-1 pure-u-md-1-2" style="padding-left:0.5rem">
+      <div class="chart-card">
+        <h3>% Not Meeting Guidelines by Age Group &amp; Sex (2022)</h3>
+        <p class="chart-note">Source: ABS NHS 2022</p>
+        <div id="bar-activity-gender"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Trend: Adults Not Meeting Physical Activity Guidelines (1995–2022)</h3>
+    <p class="chart-note">Sources: ABS National Health Surveys (multiple years)</p>
+    <div id="line-activity-trend"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Activity Level Breakdown by Age Group (2022)</h3>
+    <p class="chart-note">Proportion of adults in each activity category · Source: ABS NHS 2022</p>
+    <div id="stacked-activity"></div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════
+     SECTION 4 — OBESITY
+════════════════════════════ -->
+<div id="obesity">
+<hr class="section-divider">
+<div class="container">
+<div class="section">
+
+  <h2 class="section-title">Obesity — Who Is Most Affected?</h2>
+  <p class="section-intro">
+    Obesity rates climb with age for both men and women. Men have consistently higher rates until their 60s. The long-term trend shows obesity has nearly doubled since 1995, rising from 19% to 32% of Australian adults.
+  </p>
+
+  <div class="pure-g">
+    <div class="pure-u-1 pure-u-md-1-2" style="padding-right:0.5rem">
+      <div class="chart-card">
+        <h3>Overweight or Obese by Age Group &amp; Sex (2022)</h3>
+        <p class="chart-note">% of adults · Source: ABS NHS 2022</p>
+        <div id="grouped-bar-obesity"></div>
+      </div>
+    </div>
+    <div class="pure-u-1 pure-u-md-1-2" style="padding-left:0.5rem">
+      <div class="chart-card">
+        <h3>Obese Only (BMI ≥ 30) by Age Group &amp; Sex (2022)</h3>
+        <p class="chart-note">% of adults · Source: ABS NHS 2022</p>
+        <div id="grouped-bar-obese-only"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Long-Term Trend: Obesity Among Australian Adults (1995–2022)</h3>
+    <p class="chart-note">% of adults with BMI ≥ 30 · Sources: AIHW, ABS National Health Surveys</p>
+    <div id="line-obesity-trend"></div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════
+     SECTION 5 — FULL PICTURE
+════════════════════════════ -->
+<div id="breakdown">
+<hr class="section-divider">
+<div class="container">
+<div class="section">
+
+  <h2 class="section-title">State and Age Breakdown</h2>
+  <p class="section-intro">
+    The dot plot below ranks states by inactivity rate. The heatmap reveals where obesity is highest when both state and age group are considered together — older residents in Tasmania and Queensland face the greatest combined burden.
+  </p>
+
+  <div class="chart-card">
+    <h3>State Rankings: % Not Meeting Activity Guidelines (2022)</h3>
+    <p class="chart-note">Ordered highest to lowest · Source: ABS NHS State & Territory Findings 2022</p>
+    <div id="dot-plot"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Estimated Obesity Rate (%) by State and Age Group</h3>
+    <p class="chart-note">Estimated from ABS NHS 2022 state and national age-group data</p>
+    <div id="heatmap"></div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<div class="site-footer">
+  <div class="container">
+    <div class="pure-g">
+      <div class="pure-u-1 pure-u-md-1-2">
+        <h4>About this visualisation</h4>
+        <p>Author: Saif Qureshi &nbsp;|&nbsp; Student ID: 36196398</p>
+        <p>AI tools (Claude) used for grammar checking and code assistance. All data, analysis, and design are original work.</p>
+      </div>
+      <div class="pure-u-1 pure-u-md-1-2">
+        <h4>Data Sources</h4>
+        <p>ABS National Health Survey 2022 — <a href="https://www.abs.gov.au/statistics/health/health-conditions-and-risks/national-health-survey/2022" target="_blank">abs.gov.au</a></p>
+        <p>ABS NHS: State and Territory Findings 2022 — <a href="https://www.abs.gov.au/statistics/health/health-conditions-and-risks/national-health-survey-state-and-territory-findings/latest-release" target="_blank">abs.gov.au</a></p>
+        <p>AIHW Overweight and Obesity — <a href="https://www.aihw.gov.au/reports/overweight-obesity/overweight-and-obesity" target="_blank">aihw.gov.au</a></p>
+        <p>AIHW Physical Activity — <a href="https://www.aihw.gov.au/reports-data/behaviours-risk-factors/physical-activity/overview" target="_blank">aihw.gov.au</a></p>
+        <p>Map topology: <a href="https://github.com/rowanhogan/australian-states" target="_blank">rowanhogan/australian-states</a> (CC-BY)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ─── DATA ────────────────────────────────────────────
+
+const stateData = [
+  { state:"New South Wales",             abbr:"NSW", obesity_pct:63.1, inactive_pct:43.2 },
+  { state:"Victoria",                    abbr:"VIC", obesity_pct:61.5, inactive_pct:40.1 },
+  { state:"Queensland",                  abbr:"QLD", obesity_pct:68.4, inactive_pct:45.8 },
+  { state:"South Australia",             abbr:"SA",  obesity_pct:66.2, inactive_pct:44.5 },
+  { state:"Western Australia",           abbr:"WA",  obesity_pct:65.7, inactive_pct:42.9 },
+  { state:"Tasmania",                    abbr:"TAS", obesity_pct:71.3, inactive_pct:50.2 },
+  { state:"Northern Territory",          abbr:"NT",  obesity_pct:62.8, inactive_pct:44.1 },
+  { state:"Australian Capital Territory",abbr:"ACT", obesity_pct:58.4, inactive_pct:36.7 }
+];
+
+const activityByAge = [
+  { age:"15–17", pct:83 },{ age:"18–24", pct:36 },{ age:"25–34", pct:38 },
+  { age:"35–44", pct:40 },{ age:"45–54", pct:43 },{ age:"55–64", pct:47 },{ age:"65+", pct:57 }
+];
+
+const activityGender = [
+  { age:"18–24", sex:"Men", pct:32 },{ age:"18–24", sex:"Women", pct:40 },
+  { age:"25–34", sex:"Men", pct:35 },{ age:"25–34", sex:"Women", pct:41 },
+  { age:"35–44", sex:"Men", pct:37 },{ age:"35–44", sex:"Women", pct:43 },
+  { age:"45–54", sex:"Men", pct:40 },{ age:"45–54", sex:"Women", pct:46 },
+  { age:"55–64", sex:"Men", pct:43 },{ age:"55–64", sex:"Women", pct:51 },
+  { age:"65+",   sex:"Men", pct:52 },{ age:"65+",   sex:"Women", pct:62 }
+];
+
+const activityTrend = [
+  { year:1995, pct:71 },{ year:1999, pct:69 },{ year:2001, pct:67 },
+  { year:2004, pct:66 },{ year:2007, pct:65 },{ year:2011, pct:64 },
+  { year:2014, pct:63 },{ year:2017, pct:65 },{ year:2022, pct:46 }
+];
+
+const activityStacked = [
+  { age:"18–24", level:"Sedentary", pct:14 },{ age:"18–24", level:"Low activity", pct:22 },
+  { age:"18–24", level:"Moderate activity", pct:28 },{ age:"18–24", level:"Meets guidelines", pct:36 },
+  { age:"25–34", level:"Sedentary", pct:16 },{ age:"25–34", level:"Low activity", pct:22 },
+  { age:"25–34", level:"Moderate activity", pct:26 },{ age:"25–34", level:"Meets guidelines", pct:36 },
+  { age:"35–44", level:"Sedentary", pct:17 },{ age:"35–44", level:"Low activity", pct:23 },
+  { age:"35–44", level:"Moderate activity", pct:26 },{ age:"35–44", level:"Meets guidelines", pct:34 },
+  { age:"45–54", level:"Sedentary", pct:19 },{ age:"45–54", level:"Low activity", pct:24 },
+  { age:"45–54", level:"Moderate activity", pct:27 },{ age:"45–54", level:"Meets guidelines", pct:30 },
+  { age:"55–64", level:"Sedentary", pct:21 },{ age:"55–64", level:"Low activity", pct:26 },
+  { age:"55–64", level:"Moderate activity", pct:29 },{ age:"55–64", level:"Meets guidelines", pct:24 },
+  { age:"65+",   level:"Sedentary", pct:28 },{ age:"65+",   level:"Low activity", pct:29 },
+  { age:"65+",   level:"Moderate activity", pct:26 },{ age:"65+",   level:"Meets guidelines", pct:17 }
+];
+
+const obesityAgeGender = [
+  { age:"18–24", sex:"Men", pct:42 },{ age:"18–24", sex:"Women", pct:41 },
+  { age:"25–34", sex:"Men", pct:58 },{ age:"25–34", sex:"Women", pct:47 },
+  { age:"35–44", sex:"Men", pct:70 },{ age:"35–44", sex:"Women", pct:55 },
+  { age:"45–54", sex:"Men", pct:77 },{ age:"45–54", sex:"Women", pct:63 },
+  { age:"55–64", sex:"Men", pct:80 },{ age:"55–64", sex:"Women", pct:71 },
+  { age:"65–74", sex:"Men", pct:81 },{ age:"65–74", sex:"Women", pct:71 },
+  { age:"75+",   sex:"Men", pct:74 },{ age:"75+",   sex:"Women", pct:68 }
+];
+
+const obeseOnly = [
+  { age:"18–24", sex:"Men", pct:15 },{ age:"18–24", sex:"Women", pct:16 },
+  { age:"25–34", sex:"Men", pct:24 },{ age:"25–34", sex:"Women", pct:22 },
+  { age:"35–44", sex:"Men", pct:31 },{ age:"35–44", sex:"Women", pct:28 },
+  { age:"45–54", sex:"Men", pct:36 },{ age:"45–54", sex:"Women", pct:32 },
+  { age:"55–64", sex:"Men", pct:39 },{ age:"55–64", sex:"Women", pct:37 },
+  { age:"65–74", sex:"Men", pct:41 },{ age:"65–74", sex:"Women", pct:37 },
+  { age:"75+",   sex:"Men", pct:35 },{ age:"75+",   sex:"Women", pct:30 }
+];
+
+const obesityTrend = [
+  { year:1995, pct:19 },{ year:2001, pct:21 },{ year:2004, pct:23 },
+  { year:2007, pct:25 },{ year:2011, pct:28 },{ year:2014, pct:27.9 },
+  { year:2017, pct:31 },{ year:2022, pct:32 }
+];
+
+const heatmapData = [
+  {state:"NSW", age:"18–24", val:32},{state:"NSW", age:"25–44", val:51},{state:"NSW", age:"45–64", val:70},{state:"NSW", age:"65+", val:72},
+  {state:"VIC", age:"18–24", val:30},{state:"VIC", age:"25–44", val:49},{state:"VIC", age:"45–64", val:68},{state:"VIC", age:"65+", val:70},
+  {state:"QLD", age:"18–24", val:35},{state:"QLD", age:"25–44", val:55},{state:"QLD", age:"45–64", val:75},{state:"QLD", age:"65+", val:78},
+  {state:"SA",  age:"18–24", val:33},{state:"SA",  age:"25–44", val:53},{state:"SA",  age:"45–64", val:72},{state:"SA",  age:"65+", val:74},
+  {state:"WA",  age:"18–24", val:34},{state:"WA",  age:"25–44", val:52},{state:"WA",  age:"45–64", val:71},{state:"WA",  age:"65+", val:73},
+  {state:"TAS", age:"18–24", val:38},{state:"TAS", age:"25–44", val:58},{state:"TAS", age:"45–64", val:78},{state:"TAS", age:"65+", val:81},
+  {state:"NT",  age:"18–24", val:31},{state:"NT",  age:"25–44", val:50},{state:"NT",  age:"45–64", val:69},{state:"NT",  age:"65+", val:70},
+  {state:"ACT", age:"18–24", val:28},{state:"ACT", age:"25–44", val:46},{state:"ACT", age:"45–64", val:65},{state:"ACT", age:"65+", val:67}
+];
+
+// ─── SHARED VEGA CONFIG ───────────────────────────────
+
+const CFG = {
+  background: "transparent",
+  font: "Source Sans 3",
+  axis: {
+    labelColor: "#555", titleColor: "#444",
+    gridColor: "#e8e8e8", domainColor: "#ccc",
+    tickColor: "#ccc", labelFontSize: 11
+  },
+  legend: { labelColor: "#555", titleColor: "#444", labelFontSize: 11 },
+  view: { stroke: "transparent" }
+};
+const OPT = { actions: false, config: CFG };
+
+// ─── WAFFLE ───────────────────────────────────────────
+
+(function() {
+  const grid = document.getElementById("waffle");
+  [["w-obese",32],["w-overweight",34],["w-normal",34]].forEach(([cls,n]) => {
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement("div");
+      d.className = "waffle-cell " + cls;
+      grid.appendChild(d);
+    }
+  });
+})();
+
+// ─── MAP: OBESITY ─────────────────────────────────────
+
+vegaEmbed("#map-obesity", {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 500,
+  "height": 400,
+	"data": {
+    "url": "https://raw.githubusercontent.com/rowanhogan/australian-states/master/states.geojson",
+    "format": { 
+      "type": "json", 
+      "property": "features" 
+    }
+  },
+  "transform": [{
+    "lookup": "properties.STATE_NAME",
+    "from": { "data": { "values": stateData }, "key": "state", "fields": ["obesity_pct"] }
+  }],
+  "projection": { "type": "mercator", "center": [136.0, -26.5], "scale": 558, "translate": [235, 188] },
+  "mark": { "type": "geoshape", "stroke": "#fff", "strokeWidth": 1 },
+  "encoding": {
+    "color": {
+      "field": "obesity_pct", "type": "quantitative",
+      "scale": { "scheme": "orangered", "domain": [58, 72] },
+      "legend": { "title": "%" }
+    },
+    "tooltip": [
+      { "field": "properties.STATE_NAME", "title": "State" },
+      { "field": "obesity_pct", "title": "Overweight/Obese (%)", "format": ".1f" }
+    ]
+  }
+}, OPT);
+
+// ─── MAP: ACTIVITY ────────────────────────────────────
+
+vegaEmbed("#map-activity", {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 500,
+  "height": 400,
+  "data": {
+  "url": "https://raw.githubusercontent.com/rowanhogan/australian-states/master/states.geojson",
+  "format": { 
+	"type": "json", 
+	"property": "features" 
+	}
+	},
+  "transform": [{
+    "lookup": "properties.STATE_NAME",
+    "from": { "data": { "values": stateData }, "key": "state", "fields": ["inactive_pct"] }
+  }],
+  "projection": { "type": "mercator", "center": [136.0, -26.5], "scale": 558, "translate": [235, 188] },
+  "mark": { "type": "geoshape", "stroke": "#fff", "strokeWidth": 1 },
+  "encoding": {
+    "color": {
+      "field": "inactive_pct", "type": "quantitative",
+      "scale": { "scheme": "blues", "domain": [36, 51] },
+      "legend": { "title": "%" }
+    },
+    "tooltip": [
+      { "field": "properties.STATE_NAME", "title": "State" },
+      { "field": "inactive_pct", "title": "Inactive (%)", "format": ".1f" }
+    ]
+  }
+}, OPT);
+
+// ─── SCATTER ──────────────────────────────────────────
+
+vegaEmbed("#scatter-states", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 300,
+  data: { values: stateData },
+  layer: [
+    {
+      mark: { type: "point", filled: true, size: 140 },
+      encoding: {
+        x: { field: "inactive_pct", type: "quantitative", title: "% Not Meeting Activity Guidelines", scale: { domain: [32, 54] } },
+        y: { field: "obesity_pct",  type: "quantitative", title: "% Overweight or Obese", scale: { domain: [55, 75] } },
+        color: { value: "#e07b39" },
+        tooltip: [{ field: "abbr", title: "State" }, { field: "obesity_pct", title: "Overweight/Obese (%)", format: ".1f" }, { field: "inactive_pct", title: "Inactive (%)", format: ".1f" }]
+      }
+    },
+    {
+      mark: { type: "text", dy: -12, fontSize: 11, color: "#333" },
+      encoding: {
+        x: { field: "inactive_pct", type: "quantitative" },
+        y: { field: "obesity_pct",  type: "quantitative" },
+        text: { field: "abbr" }
+      }
+    }
+  ]
+}, OPT);
+
+// ─── BAR: ACTIVITY BY AGE ─────────────────────────────
+
+vegaEmbed("#bar-activity-age", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 260,
+  data: { values: activityByAge },
+  mark: { type: "bar", cornerRadiusTopLeft: 3, cornerRadiusTopRight: 3 },
+  encoding: {
+    x: { field: "age", type: "ordinal", title: "Age Group", axis: { labelAngle: 0 } },
+    y: { field: "pct", type: "quantitative", title: "% Not Meeting Guidelines", scale: { domain: [0, 100] } },
+    color: { field: "pct", type: "quantitative", scale: { scheme: "oranges", domain: [30, 90] }, legend: null },
+    tooltip: [{ field: "age", title: "Age Group" }, { field: "pct", title: "% Not Meeting Guidelines" }]
+  }
+}, OPT);
+
+// ─── BAR: ACTIVITY BY GENDER ──────────────────────────
+
+vegaEmbed("#bar-activity-gender", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 260,
+  data: { values: activityGender },
+  mark: { type: "bar", cornerRadiusTopLeft: 3, cornerRadiusTopRight: 3 },
+  encoding: {
+    x: { field: "age", type: "ordinal", title: "Age Group", axis: { labelAngle: -30 } },
+    y: { field: "pct", type: "quantitative", title: "% Not Meeting Guidelines", scale: { domain: [0, 70] } },
+    color: { field: "sex", type: "nominal", scale: { domain: ["Men","Women"], range: ["#1a6fad","#e07b39"] }, legend: { title: "Sex" } },
+    xOffset: { field: "sex", type: "nominal" },
+    tooltip: [{ field: "age", title: "Age Group" }, { field: "sex", title: "Sex" }, { field: "pct", title: "% Not Meeting Guidelines" }]
+  }
+}, OPT);
+
+// ─── LINE: ACTIVITY TREND ─────────────────────────────
+
+vegaEmbed("#line-activity-trend", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 260,
+  data: { values: activityTrend },
+  layer: [
+    { mark: { type: "area", opacity: 0.15, color: "#1a6fad" }, encoding: { x: { field: "year", type: "ordinal", title: "Year" }, y: { field: "pct", type: "quantitative", title: "% Not Meeting Guidelines", scale: { domain: [30, 80] } } } },
+    { mark: { type: "line", color: "#1a6fad", strokeWidth: 2.5 }, encoding: { x: { field: "year", type: "ordinal" }, y: { field: "pct", type: "quantitative" } } },
+    { mark: { type: "point", color: "#1a6fad", filled: true, size: 70 }, encoding: { x: { field: "year", type: "ordinal" }, y: { field: "pct", type: "quantitative" }, tooltip: [{ field: "year", title: "Year" }, { field: "pct", title: "% Not Meeting Guidelines" }] } }
+  ]
+}, OPT);
+
+// ─── STACKED BAR ──────────────────────────────────────
+
+vegaEmbed("#stacked-activity", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 260,
+  data: { values: activityStacked },
+  mark: "bar",
+  encoding: {
+    x: { field: "age", type: "ordinal", title: "Age Group", axis: { labelAngle: 0 } },
+    y: { field: "pct", type: "quantitative", title: "Proportion (%)", stack: "normalize", axis: { format: "%" } },
+    color: {
+      field: "level", type: "nominal",
+      scale: { domain: ["Sedentary","Low activity","Moderate activity","Meets guidelines"], range: ["#c0392b","#e07b39","#f0c040","#2e9e5b"] },
+      legend: { title: "Activity level", orient: "bottom" }
+    },
+    order: { field: "level", sort: "ascending" },
+    tooltip: [{ field: "age", title: "Age Group" }, { field: "level", title: "Activity Level" }, { field: "pct", title: "%" }]
+  }
+}, OPT);
+
+// ─── GROUPED BAR: OVERWEIGHT/OBESE ───────────────────
+
+vegaEmbed("#grouped-bar-obesity", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 260,
+  data: { values: obesityAgeGender },
+  mark: { type: "bar", cornerRadiusTopLeft: 3, cornerRadiusTopRight: 3 },
+  encoding: {
+    x: { field: "age", type: "ordinal", title: "Age Group", axis: { labelAngle: -30 } },
+    y: { field: "pct", type: "quantitative", title: "% Overweight or Obese", scale: { domain: [0, 90] } },
+    color: { field: "sex", type: "nominal", scale: { domain: ["Men","Women"], range: ["#1a6fad","#e07b39"] }, legend: { title: "Sex" } },
+    xOffset: { field: "sex", type: "nominal" },
+    tooltip: [{ field: "age", title: "Age Group" }, { field: "sex", title: "Sex" }, { field: "pct", title: "% Overweight/Obese" }]
+  }
+}, OPT);
+
+// ─── GROUPED BAR: OBESE ONLY ─────────────────────────
+
+vegaEmbed("#grouped-bar-obese-only", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 260,
+  data: { values: obeseOnly },
+  mark: { type: "bar", cornerRadiusTopLeft: 3, cornerRadiusTopRight: 3 },
+  encoding: {
+    x: { field: "age", type: "ordinal", title: "Age Group", axis: { labelAngle: -30 } },
+    y: { field: "pct", type: "quantitative", title: "% with Obesity (BMI ≥ 30)", scale: { domain: [0, 50] } },
+    color: { field: "sex", type: "nominal", scale: { domain: ["Men","Women"], range: ["#1a6fad","#e07b39"] }, legend: { title: "Sex" } },
+    xOffset: { field: "sex", type: "nominal" },
+    tooltip: [{ field: "age", title: "Age Group" }, { field: "sex", title: "Sex" }, { field: "pct", title: "% with Obesity" }]
+  }
+}, OPT);
+
+// ─── LINE: OBESITY TREND ─────────────────────────────
+
+vegaEmbed("#line-obesity-trend", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 260,
+  data: { values: obesityTrend },
+  layer: [
+    { mark: { type: "area", opacity: 0.15, color: "#c0392b" }, encoding: { x: { field: "year", type: "ordinal", title: "Year" }, y: { field: "pct", type: "quantitative", title: "% with Obesity (BMI ≥ 30)", scale: { domain: [10, 40] } } } },
+    { mark: { type: "line", color: "#c0392b", strokeWidth: 2.5 }, encoding: { x: { field: "year", type: "ordinal" }, y: { field: "pct", type: "quantitative" } } },
+    { mark: { type: "point", color: "#c0392b", filled: true, size: 70 }, encoding: { x: { field: "year", type: "ordinal" }, y: { field: "pct", type: "quantitative" }, tooltip: [{ field: "year", title: "Year" }, { field: "pct", title: "% with Obesity" }] } }
+  ]
+}, OPT);
+
+// ─── DOT PLOT ────────────────────────────────────────
+
+vegaEmbed("#dot-plot", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 260,
+  data: { values: stateData },
+  layer: [
+    { mark: { type: "rule", color: "#ccc", strokeWidth: 1.5 }, encoding: { y: { field: "abbr", type: "ordinal", sort: "-inactive_pct", title: null }, x: { field: "inactive_pct", type: "quantitative", title: "% Not Meeting Activity Guidelines", scale: { domain: [32, 54] } } } },
+    { mark: { type: "point", filled: true, size: 120, color: "#1a6fad" }, encoding: { y: { field: "abbr", type: "ordinal", sort: "-inactive_pct", title: null }, x: { field: "inactive_pct", type: "quantitative" }, tooltip: [{ field: "abbr", title: "State" }, { field: "inactive_pct", title: "% Inactive", format: ".1f" }] } }
+  ]
+}, OPT);
+
+// ─── HEATMAP ─────────────────────────────────────────
+
+vegaEmbed("#heatmap", {
+  $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+  width: "container", height: 280,
+  data: { values: heatmapData },
+  mark: { type: "rect" },
+  encoding: {
+    x: { field: "age", type: "ordinal", title: "Age Group", axis: { labelAngle: 0 } },
+    y: { field: "state", type: "ordinal", title: "State", sort: ["TAS","QLD","SA","WA","NT","NSW","VIC","ACT"] },
+    color: { field: "val", type: "quantitative", scale: { scheme: "reds", domain: [25, 85] }, legend: { title: "Obesity (%)" } },
+    tooltip: [{ field: "state", title: "State" }, { field: "age", title: "Age Group" }, { field: "val", title: "Obesity Rate (%)" }]
+  }
+}, OPT);
+
+</script>
+</body>
+</html>

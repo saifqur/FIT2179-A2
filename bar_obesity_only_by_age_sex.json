@@ -1,0 +1,55 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Obese Only (BMI ≥ 30) by Age Group and Sex (2022)",
+  "width": 400,
+  "height": 260,
+  "data": {
+    "values": [
+      { "age": "18–24", "sex": "Men",   "pct": 15 },
+      { "age": "18–24", "sex": "Women", "pct": 16 },
+      { "age": "25–34", "sex": "Men",   "pct": 24 },
+      { "age": "25–34", "sex": "Women", "pct": 22 },
+      { "age": "35–44", "sex": "Men",   "pct": 31 },
+      { "age": "35–44", "sex": "Women", "pct": 28 },
+      { "age": "45–54", "sex": "Men",   "pct": 36 },
+      { "age": "45–54", "sex": "Women", "pct": 32 },
+      { "age": "55–64", "sex": "Men",   "pct": 39 },
+      { "age": "55–64", "sex": "Women", "pct": 37 },
+      { "age": "65–74", "sex": "Men",   "pct": 41 },
+      { "age": "65–74", "sex": "Women", "pct": 37 },
+      { "age": "75+",   "sex": "Men",   "pct": 35 },
+      { "age": "75+",   "sex": "Women", "pct": 30 }
+    ]
+  },
+  "mark": {
+    "type": "bar",
+    "cornerRadiusTopLeft": 3,
+    "cornerRadiusTopRight": 3
+  },
+  "encoding": {
+    "x": {
+      "field": "age",
+      "type": "ordinal",
+      "title": "Age Group",
+      "axis": { "labelAngle": -30 }
+    },
+    "y": {
+      "field": "pct",
+      "type": "quantitative",
+      "title": "% with Obesity (BMI ≥ 30)",
+      "scale": { "domain": [0, 50] }
+    },
+    "color": {
+      "field": "sex",
+      "type": "nominal",
+      "scale": { "domain": ["Men", "Women"], "range": ["#1a6fad", "#e07b39"] },
+      "legend": { "title": "Sex" }
+    },
+    "xOffset": { "field": "sex", "type": "nominal" },
+    "tooltip": [
+      { "field": "age", "title": "Age Group" },
+      { "field": "sex", "title": "Sex" },
+      { "field": "pct", "title": "% with Obesity" }
+    ]
+  }
+}

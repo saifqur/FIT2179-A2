@@ -1,0 +1,51 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "State-by-State: Physical Inactivity vs Obesity Rate (2022)",
+  "width": 500,
+  "height": 300,
+  "data": {
+    "values": [
+      { "state": "NSW", "obesity_pct": 63.1, "inactive_pct": 43.2 },
+      { "state": "VIC", "obesity_pct": 61.5, "inactive_pct": 40.1 },
+      { "state": "QLD", "obesity_pct": 68.4, "inactive_pct": 45.8 },
+      { "state": "SA",  "obesity_pct": 66.2, "inactive_pct": 44.5 },
+      { "state": "WA",  "obesity_pct": 65.7, "inactive_pct": 42.9 },
+      { "state": "TAS", "obesity_pct": 71.3, "inactive_pct": 50.2 },
+      { "state": "NT",  "obesity_pct": 62.8, "inactive_pct": 44.1 },
+      { "state": "ACT", "obesity_pct": 58.4, "inactive_pct": 36.7 }
+    ]
+  },
+  "layer": [
+    {
+      "mark": { "type": "point", "filled": true, "size": 140 },
+      "encoding": {
+        "x": {
+          "field": "inactive_pct",
+          "type": "quantitative",
+          "title": "% Not Meeting Activity Guidelines",
+          "scale": { "domain": [32, 54] }
+        },
+        "y": {
+          "field": "obesity_pct",
+          "type": "quantitative",
+          "title": "% Overweight or Obese",
+          "scale": { "domain": [55, 75] }
+        },
+        "color": { "value": "#e07b39" },
+        "tooltip": [
+          { "field": "state", "title": "State" },
+          { "field": "obesity_pct", "title": "Overweight/Obese (%)", "format": ".1f" },
+          { "field": "inactive_pct", "title": "Inactive (%)", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "mark": { "type": "text", "dy": -12, "fontSize": 11, "color": "#333" },
+      "encoding": {
+        "x": { "field": "inactive_pct", "type": "quantitative" },
+        "y": { "field": "obesity_pct", "type": "quantitative" },
+        "text": { "field": "state" }
+      }
+    }
+  ]
+}

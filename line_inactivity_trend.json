@@ -1,0 +1,51 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Trend: Adults Not Meeting Physical Activity Guidelines (1995–2022)",
+  "width": 600,
+  "height": 260,
+  "data": {
+    "values": [
+      { "year": 1995, "pct": 71 },
+      { "year": 1999, "pct": 69 },
+      { "year": 2001, "pct": 67 },
+      { "year": 2004, "pct": 66 },
+      { "year": 2007, "pct": 65 },
+      { "year": 2011, "pct": 64 },
+      { "year": 2014, "pct": 63 },
+      { "year": 2017, "pct": 65 },
+      { "year": 2022, "pct": 46 }
+    ]
+  },
+  "layer": [
+    {
+      "mark": { "type": "area", "opacity": 0.15, "color": "#1a6fad" },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal", "title": "Year" },
+        "y": {
+          "field": "pct",
+          "type": "quantitative",
+          "title": "% Not Meeting Guidelines",
+          "scale": { "domain": [30, 80] }
+        }
+      }
+    },
+    {
+      "mark": { "type": "line", "color": "#1a6fad", "strokeWidth": 2.5 },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal" },
+        "y": { "field": "pct", "type": "quantitative" }
+      }
+    },
+    {
+      "mark": { "type": "point", "color": "#1a6fad", "filled": true, "size": 70 },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal" },
+        "y": { "field": "pct", "type": "quantitative" },
+        "tooltip": [
+          { "field": "year", "title": "Year" },
+          { "field": "pct", "title": "% Not Meeting Guidelines" }
+        ]
+      }
+    }
+  ]
+}

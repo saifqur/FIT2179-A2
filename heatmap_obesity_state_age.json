@@ -1,0 +1,68 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Estimated Obesity Rate (%) by State and Age Group",
+  "width": 500,
+  "height": 280,
+  "data": {
+    "values": [
+      { "state": "NSW", "age": "18–24", "val": 32 },
+      { "state": "NSW", "age": "25–44", "val": 51 },
+      { "state": "NSW", "age": "45–64", "val": 70 },
+      { "state": "NSW", "age": "65+",   "val": 72 },
+      { "state": "VIC", "age": "18–24", "val": 30 },
+      { "state": "VIC", "age": "25–44", "val": 49 },
+      { "state": "VIC", "age": "45–64", "val": 68 },
+      { "state": "VIC", "age": "65+",   "val": 70 },
+      { "state": "QLD", "age": "18–24", "val": 35 },
+      { "state": "QLD", "age": "25–44", "val": 55 },
+      { "state": "QLD", "age": "45–64", "val": 75 },
+      { "state": "QLD", "age": "65+",   "val": 78 },
+      { "state": "SA",  "age": "18–24", "val": 33 },
+      { "state": "SA",  "age": "25–44", "val": 53 },
+      { "state": "SA",  "age": "45–64", "val": 72 },
+      { "state": "SA",  "age": "65+",   "val": 74 },
+      { "state": "WA",  "age": "18–24", "val": 34 },
+      { "state": "WA",  "age": "25–44", "val": 52 },
+      { "state": "WA",  "age": "45–64", "val": 71 },
+      { "state": "WA",  "age": "65+",   "val": 73 },
+      { "state": "TAS", "age": "18–24", "val": 38 },
+      { "state": "TAS", "age": "25–44", "val": 58 },
+      { "state": "TAS", "age": "45–64", "val": 78 },
+      { "state": "TAS", "age": "65+",   "val": 81 },
+      { "state": "NT",  "age": "18–24", "val": 31 },
+      { "state": "NT",  "age": "25–44", "val": 50 },
+      { "state": "NT",  "age": "45–64", "val": 69 },
+      { "state": "NT",  "age": "65+",   "val": 70 },
+      { "state": "ACT", "age": "18–24", "val": 28 },
+      { "state": "ACT", "age": "25–44", "val": 46 },
+      { "state": "ACT", "age": "45–64", "val": 65 },
+      { "state": "ACT", "age": "65+",   "val": 67 }
+    ]
+  },
+  "mark": { "type": "rect" },
+  "encoding": {
+    "x": {
+      "field": "age",
+      "type": "ordinal",
+      "title": "Age Group",
+      "axis": { "labelAngle": 0 }
+    },
+    "y": {
+      "field": "state",
+      "type": "ordinal",
+      "title": "State",
+      "sort": ["TAS", "QLD", "SA", "WA", "NT", "NSW", "VIC", "ACT"]
+    },
+    "color": {
+      "field": "val",
+      "type": "quantitative",
+      "scale": { "scheme": "reds", "domain": [25, 85] },
+      "legend": { "title": "Obesity (%)" }
+    },
+    "tooltip": [
+      { "field": "state", "title": "State" },
+      { "field": "age",   "title": "Age Group" },
+      { "field": "val",   "title": "Obesity Rate (%)" }
+    ]
+  }
+}

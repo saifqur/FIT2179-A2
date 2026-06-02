@@ -1,0 +1,65 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Activity Level Breakdown by Age Group (2022)",
+  "width": 500,
+  "height": 260,
+  "data": {
+    "values": [
+      { "age": "18–24", "level": "Sedentary",         "pct": 14 },
+      { "age": "18–24", "level": "Low activity",      "pct": 22 },
+      { "age": "18–24", "level": "Moderate activity", "pct": 28 },
+      { "age": "18–24", "level": "Meets guidelines",  "pct": 36 },
+      { "age": "25–34", "level": "Sedentary",         "pct": 16 },
+      { "age": "25–34", "level": "Low activity",      "pct": 22 },
+      { "age": "25–34", "level": "Moderate activity", "pct": 26 },
+      { "age": "25–34", "level": "Meets guidelines",  "pct": 36 },
+      { "age": "35–44", "level": "Sedentary",         "pct": 17 },
+      { "age": "35–44", "level": "Low activity",      "pct": 23 },
+      { "age": "35–44", "level": "Moderate activity", "pct": 26 },
+      { "age": "35–44", "level": "Meets guidelines",  "pct": 34 },
+      { "age": "45–54", "level": "Sedentary",         "pct": 19 },
+      { "age": "45–54", "level": "Low activity",      "pct": 24 },
+      { "age": "45–54", "level": "Moderate activity", "pct": 27 },
+      { "age": "45–54", "level": "Meets guidelines",  "pct": 30 },
+      { "age": "55–64", "level": "Sedentary",         "pct": 21 },
+      { "age": "55–64", "level": "Low activity",      "pct": 26 },
+      { "age": "55–64", "level": "Moderate activity", "pct": 29 },
+      { "age": "55–64", "level": "Meets guidelines",  "pct": 24 },
+      { "age": "65+",   "level": "Sedentary",         "pct": 28 },
+      { "age": "65+",   "level": "Low activity",      "pct": 29 },
+      { "age": "65+",   "level": "Moderate activity", "pct": 26 },
+      { "age": "65+",   "level": "Meets guidelines",  "pct": 17 }
+    ]
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "age",
+      "type": "ordinal",
+      "title": "Age Group",
+      "axis": { "labelAngle": 0 }
+    },
+    "y": {
+      "field": "pct",
+      "type": "quantitative",
+      "title": "Proportion (%)",
+      "stack": "normalize",
+      "axis": { "format": "%" }
+    },
+    "color": {
+      "field": "level",
+      "type": "nominal",
+      "scale": {
+        "domain": ["Sedentary", "Low activity", "Moderate activity", "Meets guidelines"],
+        "range": ["#c0392b", "#e07b39", "#f0c040", "#2e9e5b"]
+      },
+      "legend": { "title": "Activity level", "orient": "bottom" }
+    },
+    "order": { "field": "level", "sort": "ascending" },
+    "tooltip": [
+      { "field": "age",   "title": "Age Group" },
+      { "field": "level", "title": "Activity Level" },
+      { "field": "pct",   "title": "%" }
+    ]
+  }
+}

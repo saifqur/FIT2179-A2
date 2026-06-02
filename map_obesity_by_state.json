@@ -1,0 +1,49 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Overweight or Obese Adults by State (2022)",
+  "width": 500,
+  "height": 300,
+  "projection": { "type": "mercator" },
+  "layer": [
+    {
+      "data": {
+		"url": "https://raw.githubusercontent.com/rowanhogan/australian-states/master/states.geojson",
+        "format": { "type": "json", "property": "features" }
+      },
+      "transform": [
+        {
+          "lookup": "properties.STATE_NAME",
+          "from": {
+            "data": {
+              "values": [
+                { "state": "NSW",  "obesity_pct": 63.1 },
+                { "state": "VIC",  "obesity_pct": 61.5 },
+                { "state": "QLD",  "obesity_pct": 68.4 },
+                { "state": "SA",   "obesity_pct": 66.2 },
+                { "state": "WA",   "obesity_pct": 65.7 },
+                { "state": "TAS",  "obesity_pct": 71.3 },
+                { "state": "NT",   "obesity_pct": 62.8 },
+                { "state": "ACT",  "obesity_pct": 58.4 }
+              ]
+            },
+            "key": "state",
+            "fields": ["obesity_pct"]
+          }
+        }
+      ],
+      "mark": { "type": "geoshape", "stroke": "#fff", "strokeWidth": 1 },
+      "encoding": {
+        "color": {
+          "field": "obesity_pct",
+          "type": "quantitative",
+          "scale": { "scheme": "reds", "domain": [55, 75] },
+          "legend": { "title": "%" }
+        },
+        "tooltip": [
+          { "field": "properties.STATE_NAME", "title": "State" },
+          { "field": "obesity_pct", "title": "Overweight/Obese (%)", "format": ".1f" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Long-Term Trend: Obesity Among Australian Adults (1995–2022)",
+  "width": 600,
+  "height": 260,
+  "data": {
+    "values": [
+      { "year": 1995, "pct": 19   },
+      { "year": 2001, "pct": 21   },
+      { "year": 2004, "pct": 23   },
+      { "year": 2007, "pct": 25   },
+      { "year": 2011, "pct": 28   },
+      { "year": 2014, "pct": 27.9 },
+      { "year": 2017, "pct": 31   },
+      { "year": 2022, "pct": 32   }
+    ]
+  },
+  "layer": [
+    {
+      "mark": { "type": "area", "opacity": 0.15, "color": "#c0392b" },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal", "title": "Year" },
+        "y": {
+          "field": "pct",
+          "type": "quantitative",
+          "title": "% with Obesity (BMI ≥ 30)",
+          "scale": { "domain": [10, 40] }
+        }
+      }
+    },
+    {
+      "mark": { "type": "line", "color": "#c0392b", "strokeWidth": 2.5 },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal" },
+        "y": { "field": "pct", "type": "quantitative" }
+      }
+    },
+    {
+      "mark": { "type": "point", "color": "#c0392b", "filled": true, "size": 70 },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal" },
+        "y": { "field": "pct", "type": "quantitative" },
+        "tooltip": [
+          { "field": "year", "title": "Year" },
+          { "field": "pct",  "title": "% with Obesity" }
+        ]
+      }
+    }
+  ]
+}

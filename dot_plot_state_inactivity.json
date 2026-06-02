@@ -1,0 +1,57 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "State Rankings: % Not Meeting Activity Guidelines (2022)",
+  "width": 500,
+  "height": 260,
+  "data": {
+    "values": [
+      { "state": "NSW", "inactive_pct": 43.2 },
+      { "state": "VIC", "inactive_pct": 40.1 },
+      { "state": "QLD", "inactive_pct": 45.8 },
+      { "state": "SA",  "inactive_pct": 44.5 },
+      { "state": "WA",  "inactive_pct": 42.9 },
+      { "state": "TAS", "inactive_pct": 50.2 },
+      { "state": "NT",  "inactive_pct": 44.1 },
+      { "state": "ACT", "inactive_pct": 36.7 }
+    ]
+  },
+  "layer": [
+    {
+      "mark": { "type": "rule", "color": "#ccc", "strokeWidth": 1.5 },
+      "encoding": {
+        "y": {
+          "field": "state",
+          "type": "ordinal",
+          "sort": "-inactive_pct",
+          "title": null
+        },
+        "x": {
+          "field": "inactive_pct",
+          "type": "quantitative",
+          "title": "% Not Meeting Activity Guidelines",
+          "scale": { "domain": [32, 54] }
+        }
+      }
+    },
+    {
+      "mark": { "type": "point", "filled": true, "size": 120, "color": "#1a6fad" },
+      "encoding": {
+        "y": {
+          "field": "state",
+          "type": "ordinal",
+          "sort": "-inactive_pct",
+          "title": null
+        },
+        "x": {
+          "field": "inactive_pct",
+          "type": "quantitative",
+          "scale": { "domain": [32, 54] }
+        },
+        "tooltip": [
+          { "field": "state",        "title": "State" },
+          { "field": "inactive_pct", "title": "% Inactive", "format": ".1f" }
+        ]
+      }
+    }
+  ]
+}
